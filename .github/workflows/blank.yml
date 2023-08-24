@@ -35,6 +35,17 @@ jobs:
           echo Add other actions to build,
           echo test, and deploy your project.
 
+      # - name: Create Pull Request
+      #   uses: peter-evans/create-pull-request@v4
+      #   with:
+      #     token: ${{ secrets.PAT }}          
+      #     commit-message: Cloud - Update available list
+      #     title: Cloud - Update available list
+      #     body: Cloud - Update available list
+      #     base: qa
+      #     labels: automated-pr, Clouds & Regions
+      #     branch: uat
+
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v4
         with:
@@ -46,6 +57,19 @@ jobs:
           labels: automated-pr, Clouds & Regions
           branch: uat
           # delete-branch: true
+
+      - name: Add reviewers
+        uses: actions/github-script@v4
+        with:
+          github-token: ${{ secrets.PAT }}
+          script: |
+            const pull_number = context.payload.pull_request.number
+            github.pulls.requestReviewers({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: pull_number,
+              reviewers: ['vinodkumar704']
+            })
 
 
 
