@@ -47,15 +47,23 @@ jobs:
       #     branch: uat
 
       - name: Create Pull Request
-        uses: peter-evans/create-pull-request@v4
+        uses: repo-sync/pull-request@v2
         with:
-          token: ${{ secrets.PAT }}          
-          commit-message: Cloud - Update available list
-          title: Cloud - Update available list
-          body: Cloud - Update available list
-          base: qa
-          labels: automated-pr, Clouds & Regions
-          branch: uat
+          source_branch: qa
+          destination_branch: uat
+          pr_title: 'Automated PR: Sync with uat'
+          github_token: ${{ secrets.PAT }}
+
+      # - name: Create Pull Request
+      #   uses: peter-evans/create-pull-request@v4
+      #   with:
+      #     token: ${{ secrets.PAT }}          
+      #     commit-message: Cloud - Update available list
+      #     title: Cloud - Update available list
+      #     body: Cloud - Update available list
+      #     base: qa
+      #     labels: automated-pr, Clouds & Regions
+      #     branch: uat
           # delete-branch: true
 
       # - name: Add reviewers
