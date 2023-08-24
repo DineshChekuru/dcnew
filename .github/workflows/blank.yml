@@ -49,6 +49,7 @@ jobs:
       - name: Create Pull Request
         uses: repo-sync/pull-request@v2
         with:
+          fetch_all: false
           source_branch: qa
           destination_branch: uat
           pr_title: 'Automated PR: Sync with uat'
