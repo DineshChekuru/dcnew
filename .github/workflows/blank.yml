@@ -58,18 +58,18 @@ jobs:
           branch: uat
           # delete-branch: true
 
-      - name: Add reviewers
-        uses: actions/github-script@v4
-        with:
-          github-token: ${{ secrets.PAT }}
-          script: |
-            const pull_number = context.payload.pull_request.number
-            github.pulls.requestReviewers({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              pull_number: pull_number,
-              reviewers: ['vinodkumar704']
-            })
+      # - name: Add reviewers
+      #   uses: actions/github-script@v4
+      #   with:
+      #     github-token: ${{ secrets.PAT }}
+      #     script: |
+      #       const pull_number = context.payload.pull_request.number
+      #       github.pulls.requestReviewers({
+      #         owner: context.repo.owner,
+      #         repo: context.repo.repo,
+      #         pull_number: pull_number,
+      #         reviewers: ['vinodkumar704']
+      #       })
 
 
 
