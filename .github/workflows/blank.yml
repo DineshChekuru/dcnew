@@ -5,10 +5,10 @@ name: CI
 # Controls when the workflow will run
 on:
   # Triggers the workflow on push or pull request events but only for the "main" branch
-  push:
-    branches: [ "qa" ]
-  pull_request:
-    branches: [ "qa" ]
+#  push:
+#    branches: [ "qa" ]
+#  pull_request:
+#    branches: [ "qa" ]
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -18,7 +18,7 @@ jobs:
   # This workflow contains a single job called "build"
   build:
     # The type of runner that the job will run on
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
@@ -36,6 +36,42 @@ jobs:
         run: |
           echo Add other actions to build,
           echo test, and deploy your project.
+
+      - name: Copying files from Dev to Prod directory...
+        shell: pwsh
+        run: |
+            Get-ChildItem -Recurse | Resolve-Path -Relative
+            Write-Host "-------------------------------------------1"
+            Write-Host "Getting hash of prod directory before copy"
+            Get-FileHash -InputStream ([IO.MemoryStream]::new([char[]]"$(Get-ChildItem .\prod -Recurse|Out-String)"))
+            Write-Host "copying files..."
+            $exclude = @('trigger')
+            $exclude = @('iphone.txt')
+            $exclude = @('jira.txt')
+            $exclude = @('syntax.json')
+            Copy-Item -Path ".\dev\*" -Exclude $exclude -destination ".\prod" -Recurse -Force
+            Write-Host "Getting hash of prod directory after copy"
+            Get-FileHash -InputStream ([IO.MemoryStream]::new([char[]]"$(Get-ChildItem .\prod -Recurse|Out-String)"))
+            Write-Output "File copy process completed."
+            Write-Host "-------------------------------------------2"
+            Get-ChildItem -Recurse  | Resolve-Path -Relative
+            Write-Host "-------------------------------------------3"
+
+      - name: Debug Step 1
+        run: echo "Debugging Step 1"
+
+      - name: Setup Git for Windows' minimal SDK
+        uses: git-for-windows/setup-git-for-windows-sdk@v1
+
+      - name: Debug Step 2
+        run: echo "Debugging Step 2"
+
+      - uses: EndBug/add-and-commit@v9
+        with:
+          message: '[skip actions] Auto commit to version prod artifacts'
+          committer_name: 'GitHub Actions'
+          committer_email: 'actions@github.com'
+          push: true
 
       # - name: Create Pull Request
       #   uses: peter-evans/create-pull-request@v4
